@@ -59,6 +59,9 @@ public class ServerMinesweeper {
         writerAzul.writeObject(buscaminas);
         System.out.println("Se conecto azul y todo el pedo");
         
+        
+        
+        
         Cliente jugadorRojo = new Cliente(readerRojo, writerAzul, rojo, semaforo);
         Cliente jugadorAzul = new Cliente(readerAzul, writerRojo, azul, semaforo);
         System.out.println("se crearon los procesos");
