@@ -44,9 +44,7 @@ public class Cliente extends Thread{
                     Coordenada cord = (Coordenada)reader.readObject();
                     writer.writeObject(cord);
                     System.out.println("envie turno y cord aka"+player.getEquipo());
-                } catch (IOException ex) {
-                    Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
+                } catch (IOException | ClassNotFoundException ex) {
                     Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }else{

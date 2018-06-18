@@ -33,4 +33,20 @@ public class Semaforo{
             turnoRojo = !turno;
         }
     }
+
+    public Boolean getTurnoRojo() {
+        return turnoRojo;
+    }
+
+    public void setTurnoRojo(Boolean turnoRojo) {
+        this.turnoRojo = turnoRojo;
+    }
+
+    public Boolean getTurnoAzul() {
+        return turnoAzul;
+    }
+
+    public void setTurnoAzul(Boolean turnoAzul) {
+        this.turnoAzul = turnoAzul;
+    }
 }
