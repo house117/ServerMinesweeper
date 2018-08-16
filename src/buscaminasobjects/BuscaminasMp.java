@@ -52,9 +52,7 @@ public class BuscaminasMp implements Serializable{
                 tablero[i][j]=new Celda(i,j);
             }
         }
-        colocarMinas();
-       
-        
+        colocarMinas();    
     }
     public Integer getBlueFlagCount(){
         int minas = 0;
@@ -140,8 +138,6 @@ public class BuscaminasMp implements Serializable{
         }
     }
     public Boolean abrirCelda(Integer x, Integer y, Jugador player, ObjectOutputStream writer) throws IOException{
-        
-        
         if ((!tablero[x][y].isMina())) {
             writer.writeObject(false);
             if (tablero[x][y].getEstado() == CeldaEstado.CERRADO) {
@@ -211,7 +207,7 @@ public class BuscaminasMp implements Serializable{
             }
         }
     }*/
-    public void resultados(){
+    /*public void resultados(){
          for (int i = 0; i < dimy; i++) {
             for (int j = 0; j < dimx; j++) {
                 if ( tablero[j][i].getEstado()!= CeldaEstado.ABIERTO){
@@ -224,7 +220,7 @@ public class BuscaminasMp implements Serializable{
                 //System.out.println(tablero[j][i]);
             }
         }   
-    }
+    }*/
     public void marcarCelda(Integer x, Integer y){
         tablero[x][y].nextEdo();
         
