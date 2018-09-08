@@ -108,7 +108,7 @@ public class BuscaminasMp implements Serializable{
     public Celda[][] getTablero(){
         return tablero;
     }
-    
+    //Método abrir celda receptor
     public void abrirCelda(Integer x, Integer y, Jugador player){
         if(celdaOK(x,y)){
             if((!tablero[x][y].isMina())){
@@ -134,9 +134,9 @@ public class BuscaminasMp implements Serializable{
                     tablero[x][y].setEstado(CeldaEstado.REDFLAG);
                 }
             }
-            
         }
     }
+    //Método abrir celda emisor
     public Boolean abrirCelda(Integer x, Integer y, Jugador player, ObjectOutputStream writer) throws IOException{
         if ((!tablero[x][y].isMina())) {
             writer.writeObject(false);

@@ -91,7 +91,6 @@ public class ServerMinesweeper {
             System.out.println("Se conecto azul y todo el pedo");
             writerRojo.writeObject(azul);
             writerAzul.writeObject(rojo);
-
             Cliente jugadorRojo = new Cliente(readerRojo, writerAzul, rojo, semaforo);
             Cliente jugadorAzul = new Cliente(readerAzul, writerRojo, azul, semaforo);
             Reiniciador reiniciador = new Reiniciador(writerNewGameRojo, writerNewGameAzul, readerNewGameRojo,
