@@ -6,15 +6,29 @@
 package serverminesweeper;
 
 import buscaminasobjects.BuscaminasMp;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import objects.Cliente;
 import objects.Equipo;
 import objects.Jugador;
@@ -23,24 +37,92 @@ import objects.Semaforo;
 import objectsServerChat.ClienteChat;
 import objectsServerChat.ColaMensajes;
 import objectsServerChat.Organizador;
+import sun.java2d.d3d.D3DRenderQueue;
 
 
 /**
  *
  * @author House
  */
-public class ServerMinesweeper {
+public class ServerMinesweeper{
 
     private static ServerSocket server;
     private static ServerSocket canalNewGame;
+    private static JFrame ventanaServer;
+    private static JLabel lblEstado;
+    private static JLabel lblEstadoDinamico;
+    private static JLabel lblImagen;
+    private static JPanel north;
+    private static JPanel south;
+    private static JPanel west;
+    private static JPanel east;
+    private static JPanel pnlPrincipal;
+    private static JButton btnSalir;
+    private static JPanel pnlBoton;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         server = new ServerSocket(1235);
         canalNewGame = new ServerSocket(1236);
+        /*Frame inicialization*/
+        ventanaServer = new JFrame();
+        ventanaServer.setTitle("Server M.Minesweeper");
+        ventanaServer.setLayout(new BorderLayout());
+        ventanaServer.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        ventanaServer.setSize(new Dimension(550, 450));
+        ventanaServer.setResizable(false);
+        ventanaServer.setLocationRelativeTo(null);
+        ventanaServer.setBackground(Color.black);
+        /*Principal panel*/
+        pnlPrincipal = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        lblImagen = new JLabel();
+        cargarIcono("/images/SMinesweeper.png", lblImagen);
+        lblEstado = new JLabel("Estado del servidor: ");
+        lblEstado.setFont(new Font("Arial Black", Font.PLAIN, 14));
+        lblEstadoDinamico = new JLabel("Waiting for players....");
+        lblEstadoDinamico.setFont(new Font("Georgia", Font.ITALIC, 14));
+        btnSalir = new JButton("Salir del servidor");
+        btnSalir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                 System.exit(EXIT_ON_CLOSE);
+             }
+        });
+        pnlBoton = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        pnlBoton.setPreferredSize(new Dimension(ventanaServer.getWidth()-20, 50));
+
+        pnlPrincipal.add(lblImagen);
+        pnlPrincipal.add(lblEstado);
+        pnlPrincipal.add(lblEstadoDinamico);
+        pnlBoton.add(btnSalir);
+        pnlPrincipal.add(pnlBoton);
+
+        /*Lateral panels*/
+        north = new JPanel();
+        north.setBackground(Color.red);
+        south = new JPanel();
+        btnSalir = new JButton("Salir del servidor");
+        south.setBackground(Color.black);
+        west = new JPanel();
+        west.setBackground(Color.blue);
+        east = new JPanel();
+        east.setBackground(Color.gray);
+        
+        ventanaServer.add(pnlPrincipal, BorderLayout.CENTER);
+        ventanaServer.add(north,BorderLayout.NORTH);
+        ventanaServer.add(south, BorderLayout.SOUTH);
+        ventanaServer.add(west, BorderLayout.WEST);
+        ventanaServer.add(east, BorderLayout.EAST);
+        ventanaServer.setVisible(true);
+        //--------------------
+        //-------------------
+        /*Running server*/
+        lblEstadoDinamico.setText("Iniciando sistema de chat y componentes buscaminas...");
+        Thread.sleep(1000);
+        lblEstadoDinamico.setText("Arrancando componentes");
+        Thread.sleep(1000);
         while (true) {
-            
             //COSAS DEL CHAT!!!
             ArrayList<ClienteChat> clientes = new ArrayList<>();
             ColaMensajes cola = new ColaMensajes();
@@ -48,7 +130,7 @@ public class ServerMinesweeper {
             organizador.start();
             //servidor pone el juego porque es bien chido jajaja
             //16, 16, 51
-
+            /*EL SERVIDOR CREA PRIMERO EL JUEGO PORQUE ES el mero mero jajaja*/
             BuscaminasMp buscaminas = new BuscaminasMp(16, 16, 51);
             Semaforo semaforo = new Semaforo(true, false);
             ObjectOutputStream writerRojo;
@@ -61,6 +143,7 @@ public class ServerMinesweeper {
             ObjectInputStream readerNewGameAzul;
             Jugador rojo;
             Jugador azul;
+            lblEstadoDinamico.setText("Esperando jugadores...");
             //JUGADOR ROJO
             iniciarUnChat(clientes, cola, organizador, canalNewGame);
             Socket playerRojo = server.accept();
@@ -74,8 +157,10 @@ public class ServerMinesweeper {
             writerRojo.writeObject(true);
             writerRojo.writeObject(buscaminas);
 
-            System.out.println("Se conecto rojo y todo el pedo");
-            Thread.sleep(1000);
+            lblEstadoDinamico.setText("Jugador 1 conectado");
+            Thread.sleep(1500);
+            lblEstadoDinamico.setText("Esperando jugador 2");
+
             //JUGADOR AZUL
             iniciarUnChat(clientes, cola, organizador, canalNewGame);
             Socket playerAzul = server.accept();
@@ -88,7 +173,9 @@ public class ServerMinesweeper {
             writerAzul.writeObject(azul);
             writerAzul.writeObject(false);
             writerAzul.writeObject(buscaminas);
-            System.out.println("Se conecto azul y todo el pedo");
+            lblEstadoDinamico.setText("Jugador 2 conectado");
+            Thread.sleep(1500);
+
             writerRojo.writeObject(azul);
             writerAzul.writeObject(rojo);
             Cliente jugadorRojo = new Cliente(readerRojo, writerAzul, rojo, semaforo);
@@ -101,6 +188,11 @@ public class ServerMinesweeper {
             reiniciador.start();
             System.out.println("Iniciaron los procesos, que chingon");
         }
+    }
+    private static void cargarIcono(String path, JLabel objetive) {
+        URL url = System.class.getResource(path);
+        ImageIcon im = new ImageIcon(url);
+        objetive.setIcon(im);
     }
     public static void iniciarUnChat(ArrayList<ClienteChat> clientes, ColaMensajes cola,
             Organizador organizador, ServerSocket server){

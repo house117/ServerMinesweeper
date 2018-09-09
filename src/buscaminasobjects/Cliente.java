@@ -39,7 +39,9 @@ public class Cliente extends Thread{
             synchronized(semaforo){
                 if(semaforo.getTurno(player)){
                 try {
+                    System.out.println("CLIENTE DE PLAYER de "+player.getEquipo()+" ESTÁ ESPERANDO UN TURNO!!!!");
                      Boolean turno = (Boolean)reader.readObject();
+                     System.out.println("CLIENTE DE PLAYER de "+player.getEquipo()+" RECIBIÓ BOOLEANO!!!");
                      semaforo.setTurno(player, turno);
                      writer.writeObject(!turno);
                     Coordenada cord = (Coordenada)reader.readObject();

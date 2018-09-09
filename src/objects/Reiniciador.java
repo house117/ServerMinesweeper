@@ -39,24 +39,41 @@ public class Reiniciador extends Thread{
     public void run() {
         while(true){
             try {
+                System.out.println("-------REINICIADOR ESPERA RESPUESTAS DE JUGADORES!!!!---------");
                 Boolean respuestaAzul = (Boolean) readerAzul.readObject();
-                Boolean respuestaRojo = (Boolean) readerRojo.readObject();
-                if(respuestaAzul && respuestaRojo){
-                    writerAzul.writeObject(true);
+                System.out.println("-------REINICIADOR RECIBE RESPUESTA DE AZUL---------");
+                if (respuestaAzul) {
                     writerRojo.writeObject(true);
-                    BuscaminasMp buscaminas = new BuscaminasMp(16, 16, 51);
-                    writerAzul.writeObject(buscaminas);
-                    writerRojo.writeObject(buscaminas);
-                    writerRojo.writeObject(true);
-                    writerAzul.writeObject(false);
-                    synchronized (semaforo) {
-                        semaforo.setTurnoAzul(false);
-                        semaforo.setTurnoRojo(true);
-                    }
+                    Boolean respuestaRojo = (Boolean) readerRojo.readObject();
+                    if (respuestaRojo) {
+                        if (respuestaAzul && respuestaRojo) {
+                            System.out.println("-------------RESPUESTAS POSITIVAS A INICIAR NUEVO JUEGO------------");
+                            writerAzul.writeObject(true);
+                            System.out.println("-------------SE ENVIARON RESPUESTAS POSITIVAS A AMBOS JUGADORES------------");
+                            BuscaminasMp buscaminas = new BuscaminasMp(16, 16, 51);
+                            writerAzul.writeObject(buscaminas);
+                            writerRojo.writeObject(buscaminas);
+                            /*writerRojo.writeObject(true);
+                            writerAzul.writeObject(false);
+                            System.out.println("REINICIADOR ENVIÓ EL JUEGO Y LOS TURNOS A LOS JUGADORES!!!");
+                            synchronized (semaforo) {
+                                semaforo.setTurnoAzul(false);
+                                semaforo.setTurnoRojo(true);
+                            }*/
+                            System.out.println("REINICIADOR NO ENVIO TURNOS A SEMAFORO");
+                            System.out.println("REINICIADOR NOTIFICA QUE YA USO A SEMAFORO");
 
-                    
+                        } else {
+                            writerAzul.writeObject(false);
+                            writerRojo.writeObject(false);
+                        }
+                    }else{
+                        System.out.println("CASO EN EL QUE ACEPTÓ AZUL PERO ROJO NO QUIZO.");
+                        writerAzul.writeObject(false);
+                    }
                 }else{
-                    writerAzul.writeObject(false);
+                    System.out.println("CASO EN EL QUE NO QUIZO EL JUGADOR AZUL MEN :(");
+                    readerRojo.readObject();
                     writerRojo.writeObject(false);
                 }
             } catch (IOException ex) {
@@ -64,6 +81,8 @@ public class Reiniciador extends Thread{
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Reiniciador.class.getName()).log(Level.SEVERE, null, ex);
             }
+            //here
+            System.out.println("REINICIADOR TERMINÓ TODO!!!!! DARA VUELTA???");
         }
     }
 }
