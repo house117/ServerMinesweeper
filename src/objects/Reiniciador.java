@@ -70,15 +70,14 @@ public class Reiniciador extends Thread{
                     }else{
                         System.out.println("CASO EN EL QUE ACEPTÓ AZUL PERO ROJO NO QUIZO.");
                         writerAzul.writeObject(false);
+                        writerRojo.writeObject(true);
                     }
                 }else{
                     System.out.println("CASO EN EL QUE NO QUIZO EL JUGADOR AZUL MEN :(");
-                    readerRojo.readObject();
                     writerRojo.writeObject(false);
+                    readerRojo.readObject();
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Reiniciador.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(Reiniciador.class.getName()).log(Level.SEVERE, null, ex);
             }
             //here
